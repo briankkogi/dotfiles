@@ -1,14 +1,14 @@
+
 format = """
 [](surface0)\
 $os\
 $username\
-[](bg:blue fg:surface0)\
+[](bg:peach fg:surface0)\
 $directory\
-[](fg:blue bg:surface1)\
+[](fg:peach bg:green)\
 $git_branch\
 $git_status\
-[](fg:surface1 bg:mantle)\
-$docker_context\
+[](fg:green bg:teal)\
 $line_break$character"""
 
 palette = 'catppuccin_mocha'
@@ -20,10 +20,10 @@ pink = "#bac2de"
 orange = "#bac2de"
 red = "#a6adc8"
 maroon = "#a6adc8"
-peach = "#bac2de"
+peach = "#9399b2"
 yellow = "#cdd6f4"
-green = "#cdd6f4"
-teal = "#bac2de"
+green = "#6c7086"
+teal = "#45475a"
 sky = "#bac2de"
 sapphire = "#a6adc8"
 blue = "#9399b2"
@@ -51,7 +51,7 @@ style_root = "bg:surface0 fg:red"
 format = '[ $user ]($style)'
 
 [directory]
-style = "fg:mantle bg:blue"
+style = "fg:crust bg:peach"
 format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
@@ -65,12 +65,12 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:surface1"
-format = '[[ $symbol $branch ](fg:text bg:surface1)]($style)'
+style = "bg:green"
+format = '[[ $symbol $branch ](fg:text bg:green)]($style)'
 
 [git_status]
-style = "bg:surface1"
-format = '[[($all_status$ahead_behind )](fg:text bg:surface1)]($style)'
+style = "bg:green"
+format = '[[($all_status$ahead_behind )](fg:text bg:green)]($style)'
 
 
 [line_break]
