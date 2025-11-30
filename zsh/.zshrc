@@ -1,0 +1,15 @@
+export ZSH="$HOME/.oh-my-zsh"
+
+ZSH_THEME=""
+
+plugins=(git)
+
+source $ZSH/oh-my-zsh.sh
+
+alias ohmyzsh="nvim ~/.oh-my-zsh"
+alias zconfig="nvim ~/.zshrc"
+
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+eval "$(starship init zsh)"
