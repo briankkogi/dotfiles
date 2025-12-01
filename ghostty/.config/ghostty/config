@@ -3,4 +3,5 @@ font-size = 12
 background-opacity = 0.85
 background-blur-radius = 20
 theme = Catppuccin Mocha
+confirm-close-surface = false
 # command = /bin/zsh -l -c "tmux new-session -A -s main"
