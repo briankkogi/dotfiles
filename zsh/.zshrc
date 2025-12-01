@@ -13,3 +13,6 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 
 eval "$(starship init zsh)"
+
+
+alias tmux="tmux new-session -A -s main"
