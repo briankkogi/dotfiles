@@ -1,10 +1,13 @@
+# Dynamic theme colors
+config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
+
 font-family = JetBrainsMono Nerd Font
 font-size = 12
 background-opacity = 0.85
 background-blur-radius = 20
-background = #1b1b1b
-background-opacity = 0.85
-background-blur-radius = 20
+# background = #1b1b1b
 # theme = Catppuccin Mocha
 confirm-close-surface = false
 # command = /bin/zsh -l -c "tmux new-session -A -s main"
+
+mouse-scroll-multiplier = 0.95
