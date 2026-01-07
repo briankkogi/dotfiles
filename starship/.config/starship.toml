@@ -8,7 +8,7 @@ $directory\
 [](fg:peach bg:green)\
 $git_branch\
 $git_status\
-[](fg:green bg:teal)\
+[](fg:green)\
 $line_break$character"""
 
 palette = 'catppuccin_mocha'
