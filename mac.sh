@@ -21,6 +21,11 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Disable colors if not in a terminal
+if [[ ! -t 1 ]]; then
+    RED='' GREEN='' YELLOW='' BLUE='' NC=''
+fi
+
 # ╔═══════════════════════════════════════════════════════════════════════════╗
 # ║                            HELPER FUNCTIONS                               ║
 # ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -139,7 +144,7 @@ stow_package() {
     # Backup existing files/dirs
     backup_if_exists "$target"
     
-    if stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "$package" 2>/dev/null; then
+    if stow --dir="$DOTFILES_DIR" --target="$HOME" --restow --verbose "$package"; then
         log_success "Stowed $package"
         STOW_SUCCESS+=("$package")
     else
@@ -201,6 +206,10 @@ main() {
     done
     
     print_summary
+    
+    if [[ ${#STOW_FAILED[@]} -gt 0 ]]; then
+        exit 1
+    fi
 }
 
 main

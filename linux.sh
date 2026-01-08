@@ -21,6 +21,11 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Disable colors if not in a terminal
+if [[ ! -t 1 ]]; then
+    RED='' GREEN='' YELLOW='' BLUE='' NC=''
+fi
+
 # ╔═══════════════════════════════════════════════════════════════════════════╗
 # ║                            HELPER FUNCTIONS                               ║
 # ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -48,11 +53,9 @@ install_yay() {
     # Clone and build yay
     local temp_dir
     temp_dir=$(mktemp -d)
+    trap "rm -rf '$temp_dir'" RETURN
     git clone https://aur.archlinux.org/yay.git "$temp_dir/yay"
     (cd "$temp_dir/yay" && makepkg -si --noconfirm)
-    
-    # Cleanup
-    rm -rf "$temp_dir"
     
     log_success "yay installed"
 }
@@ -126,13 +129,21 @@ install_bun() {
 }
 
 set_zsh_default() {
+    local zsh_path
+    zsh_path=$(command -v zsh)
+    
     if [[ "$(basename "$SHELL")" == "zsh" ]]; then
         log_success "Zsh is already the default shell"
         return 0
     fi
     
+    if [[ ! -x "$zsh_path" ]]; then
+        log_error "Zsh not found"
+        return 1
+    fi
+    
     log_info "Setting zsh as default shell..."
-    chsh -s /bin/zsh
+    chsh -s "$zsh_path"
     log_success "Zsh set as default shell (restart terminal to take effect)"
 }
 
@@ -163,7 +174,7 @@ stow_package() {
     # Backup existing files/dirs
     backup_if_exists "$target"
     
-    if stow --dir="$DOTFILES_DIR" --target="$HOME" --restow "$package" 2>/dev/null; then
+    if stow --dir="$DOTFILES_DIR" --target="$HOME" --restow --verbose "$package"; then
         log_success "Stowed $package"
         STOW_SUCCESS+=("$package")
     else
@@ -225,6 +236,10 @@ main() {
     done
     
     print_summary
+    
+    if [[ ${#STOW_FAILED[@]} -gt 0 ]]; then
+        exit 1
+    fi
 }
 
 main
