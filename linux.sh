@@ -34,6 +34,29 @@ command_exists() {
     command -v "$1" &>/dev/null
 }
 
+install_yay() {
+    if command_exists yay; then
+        log_success "yay already installed"
+        return 0
+    fi
+    
+    log_info "Installing yay AUR helper..."
+    
+    # Ensure base-devel and git are installed
+    sudo pacman -S --needed --noconfirm base-devel git
+    
+    # Clone and build yay
+    local temp_dir
+    temp_dir=$(mktemp -d)
+    git clone https://aur.archlinux.org/yay.git "$temp_dir/yay"
+    (cd "$temp_dir/yay" && makepkg -si --noconfirm)
+    
+    # Cleanup
+    rm -rf "$temp_dir"
+    
+    log_success "yay installed"
+}
+
 # ╔═══════════════════════════════════════════════════════════════════════════╗
 # ║                          BACKUP FUNCTIONS                                 ║
 # ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -61,11 +84,23 @@ backup_if_exists() {
 install_dependencies() {
     log_info "Installing dependencies via pacman..."
     
-    local packages=(stow neovim tmux starship ghostty ttf-jetbrains-mono-nerd)
+    local pacman_packages=(
+        stow neovim tmux starship ttf-jetbrains-mono-nerd
+        ripgrep fd nodejs npm lazygit fzf python
+        base-devel git curl zsh
+    )
     
-    log_info "Installing packages: ${packages[*]}"
-    sudo pacman -S --needed --noconfirm "${packages[@]}"
-    log_success "Dependencies installed"
+    log_info "Installing pacman packages: ${pacman_packages[*]}"
+    sudo pacman -S --needed --noconfirm "${pacman_packages[@]}"
+    log_success "Pacman packages installed"
+    
+    # Install yay for AUR packages
+    install_yay
+    
+    # Install AUR packages (ghostty is AUR-only)
+    log_info "Installing AUR packages via yay..."
+    yay -S --needed --noconfirm ghostty
+    log_success "AUR packages installed"
 }
 
 install_oh_my_zsh() {
@@ -88,6 +123,17 @@ install_bun() {
     log_info "Installing Bun..."
     curl -fsSL https://bun.sh/install | bash
     log_success "Bun installed"
+}
+
+set_zsh_default() {
+    if [[ "$(basename "$SHELL")" == "zsh" ]]; then
+        log_success "Zsh is already the default shell"
+        return 0
+    fi
+    
+    log_info "Setting zsh as default shell..."
+    chsh -s /bin/zsh
+    log_success "Zsh set as default shell (restart terminal to take effect)"
 }
 
 # ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -168,6 +214,7 @@ main() {
     install_dependencies
     install_oh_my_zsh
     install_bun
+    set_zsh_default
     
     # Ensure .config exists
     mkdir -p "$HOME/.config"
