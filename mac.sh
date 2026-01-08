@@ -76,7 +76,7 @@ install_homebrew() {
 install_dependencies() {
     log_info "Installing dependencies via Homebrew..."
     
-    local packages=(stow neovim tmux starship)
+    local packages=(stow neovim tmux starship ripgrep fd node lazygit fzf python)
     local casks=(ghostty font-jetbrains-mono-nerd-font)
     
     log_info "Installing packages: ${packages[*]}"
