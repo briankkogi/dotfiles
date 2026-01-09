@@ -110,9 +110,13 @@ tooltip label {
   margin-right: 8px;
 }
 
-#custom-update,
 #custom-screenrecording-indicator {
   font-size: 10px;
+}
+
+#custom-update {
+  font-size: 12px;
+  padding: 4px 14px 4px 10px;
 }
 
 #custom-screenrecording-indicator.active {
