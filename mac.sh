@@ -59,6 +59,22 @@ backup_if_exists() {
     BACKUPS_CREATED+=("$backup")
 }
 
+backup_stow_conflicts() {
+    local package="$1"
+    local conflicts
+    
+    # Get list of conflicting files from stow simulation
+    conflicts=$(stow --simulate --dir="$DOTFILES_DIR" --target="$HOME" --restow "$package" 2>&1 \
+        | grep "existing target" \
+        | sed 's/.*existing target \([^ ]*\).*/\1/' \
+        || true)
+    
+    # Backup each conflicting file
+    for file in $conflicts; do
+        backup_if_exists "$HOME/$file"
+    done
+}
+
 # ╔═══════════════════════════════════════════════════════════════════════════╗
 # ║                        INSTALLATION FUNCTIONS                             ║
 # ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -143,6 +159,9 @@ stow_package() {
     
     # Backup existing files/dirs
     backup_if_exists "$target"
+    
+    # Backup any conflicting files detected by stow
+    backup_stow_conflicts "$package"
     
     if stow --dir="$DOTFILES_DIR" --target="$HOME" --restow --verbose "$package"; then
         log_success "Stowed $package"
